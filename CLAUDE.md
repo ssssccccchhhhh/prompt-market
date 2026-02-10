@@ -16,18 +16,116 @@ Three-phase roadmap:
 | Phase | 내용 | 상태 |
 |-------|------|------|
 | 1.1 | 프로젝트 초기화 | ✅ 완료 |
-| 1.2 | MCP 서버 3종 (17도구) | ✅ 완료 |
+| 1.2 | MCP 서버 3종 (Jira 7, GitLab 6, Loki 4 = 17도구) | ✅ 완료 |
 | 1.3 | Skills 3종 (SKILL.md + package.json) | ✅ 완료 |
 | 1.4 | setup.sh + install.sh | ✅ 완료 |
 | 1.5 | 팀원 온보딩 + 피드백 | 수동 작업 (별도) |
-| 2.1 | Registry (generate-registry.ts) | ✅ 완료 |
-| 2.2 | Market UI (리더보드 + 상세) | ✅ 완료 |
-| 2.3 | CLI 구현 (npx jetsong) | 🔜 예정 |
-| 2.4 | Setup Web UI (/setup) | 🔜 예정 |
+| 2.1 | Registry (generate-registry.ts → registry.json) | ✅ 완료 |
+| 2.2 | Market UI (리더보드 + 상세 + Agent 필터) | ✅ 완료 |
+| 2.3 | CLI 구현 (npx jetsong install/list/info/search) | ✅ 완료 |
+| 2.4 | Setup Web UI (/setup 5단계 Stepper) | ✅ 완료 |
 | 2.5 | 소셜 기능 (stars, reviews, stats) | 📌 추후 작업 예정 |
-| 2.6 | 버전 관리 + Changelog | 🔜 예정 |
+| 2.6 | 버전 관리 + CHANGELOG.md 파싱 | ✅ 완료 |
 
 Detailed design docs live in `docs/00-overview.md` through `docs/11-versioning.md`.
+
+---
+
+## 현재 작업 상태 (세션 이관용)
+
+> 최종 업데이트: 2026-02-11 | 최신 커밋: `e996b46`
+> `pnpm build` 통과 확인 완료
+
+### ✅ 완료
+
+**Phase 1 전체 (인프라)**
+- MCP 서버 3종: `mcp/jira-mcp`, `mcp/gitlab-mcp`, `mcp/loki-mcp` (각각 빌드 완료)
+- Skills 3종: `skills/quick-review`, `skills/verify`, `skills/commit-push-pr` (SKILL.md frontmatter + package.json)
+- `scripts/generate-registry.ts`: MCP 3 + Skill 3 = 6개 패키지 → `registry.json` 자동 생성
+- `setup.sh` (5단계 대화형), `skills/install.sh` (심링크 설치)
+
+**Phase 2 핵심 기능**
+- `/market` 리더보드: 타입/정렬 필터, 검색, Agent 필터 (ToolFilter sticky), 테이블 컬럼 고정
+- `/market/[type]/[id]` 상세: PackageHeader, CompatGrid (선택 가능), InstallCommand, McpEnvSetup, Changelog, CartButton (헤더 우측)
+- `/setup` 5단계 Stepper: 도구 선택 → MCP → Skill → 토큰 입력 → 설정 완료
+- Setup UX: 호환성 리마인더 (amber 경고), PROJECT_ROOT 입력, `?tool=` URL 파라미터로 도구 pre-select
+- ConfigOutput: JSON 도구 통합 탭 (Claude Code/Cursor/OpenCode/Antigravity) + Codex TOML 별도 탭
+- CLI: `jetsong install/list/info/search` 4개 커맨드 (ESM, chalk v5, ora v9)
+- 버전 관리: CHANGELOG.md 파싱 → registry.json 포함, 상세 페이지 렌더링
+
+**UX 개선 (Phase 2 이후 추가)**
+- "AI 코딩 도구" → "AI Agent" 네이밍 통일
+- ToolFilter sticky 고정 + 셋업 버튼 disable/enable
+- CompatBadge fullName + 지원/미지원 tooltip
+- 상세 페이지 CompatGrid 클릭 선택 가능 (agent별 고유 색상 ring)
+- 장바구니 버튼 헤더 우측 (추후 구현 안내)
+
+### 🚧 미완료 / 다음 작업
+
+**Phase 2.5 — 소셜 기능 (추후 작업 예정)**
+- `data/stats.json`, `data/reviews.json` 생성
+- API Routes: `/api/stats/install`, `/api/stats/star`, `/api/reviews`
+- StarButton, ReviewSection UI 컴포넌트
+- 리더보드 정렬에 실제 stats 반영
+- 설계 문서: `docs/10-social-features.md`
+
+**장바구니 기능 구현**
+- CartButton은 UI만 존재 (클릭 시 "추후 업데이트" 안내)
+- 실제 장바구니 상태 관리 (Context/Zustand), 여러 패키지 담기, 일괄 셋업 연동 필요
+
+**Phase 3 — 오픈소스 준비**
+- GitHub OAuth 인증
+- DB 전환 (Supabase/Turso): `JsonRegistry` → `DbRegistry`
+- `npx jetsong` npm 배포
+- 패키지 등록 페이지 (`/market/submit`)
+- CI/CD 파이프라인
+
+### 📋 알려진 이슈
+
+- `.next` 캐시 오염 시 `Cannot find module './480.js'` 에러 발생 → `rm -rf .next` 후 재빌드로 해결
+- `pnpm build` 전 `tsx scripts/generate-registry.ts` 자동 실행 (prebuild hook)
+- main 브랜치에 23개 로컬 커밋 미푸시 상태 (`git push` 필요)
+
+### 🗂️ 주요 파일 맵
+
+```
+src/app/
+├── market/
+│   ├── page.tsx                          ← 리더보드 (RSC)
+│   ├── types.ts                          ← RegistryPackage, CompatibilityMap 등
+│   ├── components/
+│   │   ├── ToolFilter.tsx                ← Agent 필터 (sticky, client)
+│   │   ├── FilterBar.tsx                 ← 타입/정렬 필터
+│   │   ├── SearchBox.tsx                 ← 검색
+│   │   ├── MarketContent.tsx             ← 필터링 + 정렬 로직
+│   │   ├── PackageTable.tsx              ← 데스크톱 테이블 (table-fixed)
+│   │   ├── PackageCard.tsx               ← 모바일 카드
+│   │   └── CompatBadge.tsx               ← CC/Cu/Cx/OC/AG 배지
+│   └── [type]/[id]/
+│       ├── page.tsx                      ← 패키지 상세 (SSG)
+│       └── components/
+│           ├── PackageHeader.tsx
+│           ├── CompatGrid.tsx            ← 선택 가능한 Agent 그리드 (client)
+│           ├── CartButton.tsx            ← 장바구니 (헤더, 추후 구현)
+│           ├── InstallCommand.tsx
+│           └── McpEnvSetup.tsx
+├── setup/
+│   ├── page.tsx                          ← ?tool= 파라미터 지원
+│   ├── components/
+│   │   ├── SetupStepper.tsx              ← 5단계 메인 컨트롤러
+│   │   ├── ToolSelector.tsx              ← Step 1
+│   │   ├── McpSelector.tsx               ← Step 2 (호환성 리마인더)
+│   │   ├── SkillSelector.tsx             ← Step 3 (호환성 리마인더)
+│   │   ├── TokenInput.tsx                ← Step 4 (호환성 리마인더)
+│   │   ├── ConfigOutput.tsx              ← Step 5 (JSON/TOML + PROJECT_ROOT)
+│   │   └── CliCommand.tsx                ← Step 5 (Skill 설치 커맨드)
+│   └── lib/
+│       └── config-generators.ts          ← generateJsonConfig, generateTomlConfig
+cli/src/
+├── index.ts                              ← CLI 엔트리 (ESM)
+├── commands/                             ← install, list, info, search
+└── lib/                                  ← registry, config-gen, installer
+```
 
 ## Tech Stack
 
