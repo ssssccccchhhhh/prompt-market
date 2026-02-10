@@ -1,6 +1,7 @@
 {
   "name": "jetsong",
   "version": "0.1.0",
+  "type": "module",
   "description": "MCP/Skill 패키지 관리 CLI",
   "main": "dist/index.js",
   "bin": {
@@ -11,7 +12,10 @@
     "dev": "tsx watch src/index.ts"
   },
   "dependencies": {
-    "commander": "^13.0.0"
+    "@inquirer/prompts": "^8.2.0",
+    "chalk": "^5.6.2",
+    "commander": "^13.0.0",
+    "ora": "^9.3.0"
   },
   "devDependencies": {
     "tsx": "^4.0.0",
