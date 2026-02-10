@@ -1,0 +1,20 @@
+{
+  "name": "jetsong",
+  "version": "0.1.0",
+  "description": "MCP/Skill 패키지 관리 CLI",
+  "main": "dist/index.js",
+  "bin": {
+    "jetsong": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/index.ts"
+  },
+  "dependencies": {
+    "commander": "^13.0.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.0.0",
+    "typescript": "^5.7.0"
+  }
+}
