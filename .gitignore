@@ -1,0 +1,9 @@
+node_modules/
+.next/
+dist/
+*.env
+*.env.*
+.config/jetsong-mcp/
+registry.json
+*.tsbuildinfo
+.DS_Store
