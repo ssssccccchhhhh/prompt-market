@@ -16,6 +16,7 @@ export default function MarketContent({ packages }: MarketContentProps) {
   const query = searchParams.get('q')?.toLowerCase() ?? '';
   const filterType = (searchParams.get('type') ?? 'all') as FilterType;
   const sortKey = (searchParams.get('sort') ?? 'installs') as SortKey;
+  const filterTool = searchParams.get('tool') ?? '';
 
   const filtered = useMemo(() => {
     let result = [...packages];
@@ -23,6 +24,11 @@ export default function MarketContent({ packages }: MarketContentProps) {
     // Filter by type
     if (filterType !== 'all') {
       result = result.filter((pkg) => pkg.type === filterType);
+    }
+
+    // Filter by tool compatibility
+    if (filterTool) {
+      result = result.filter((pkg) => pkg.compatibility[filterTool]);
     }
 
     // Filter by search query
@@ -50,7 +56,7 @@ export default function MarketContent({ packages }: MarketContentProps) {
     });
 
     return result;
-  }, [packages, filterType, query, sortKey]);
+  }, [packages, filterType, filterTool, query, sortKey]);
 
   return (
     <>

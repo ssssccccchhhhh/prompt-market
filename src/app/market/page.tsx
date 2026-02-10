@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 import Link from 'next/link';
 import registry from '@/../registry.json';
 import SearchBox from './components/SearchBox';
+import ToolFilter from './components/ToolFilter';
 import FilterBar from './components/FilterBar';
 import MarketContent from './components/MarketContent';
 import type { RegistryPackage } from './types';
@@ -57,6 +58,9 @@ export default function MarketPage() {
               <SearchBox />
             </Suspense>
           </div>
+          <Suspense>
+            <ToolFilter />
+          </Suspense>
           <Suspense>
             <FilterBar />
           </Suspense>

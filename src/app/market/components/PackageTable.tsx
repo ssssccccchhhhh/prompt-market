@@ -23,17 +23,17 @@ export default function PackageTable({ packages }: PackageTableProps) {
 
   return (
     <div className="hidden md:block">
-      <Table>
+      <Table className="table-fixed">
         <TableHeader>
           <TableRow className="border-neutral-800 hover:bg-transparent">
             <TableHead className="w-12 text-neutral-500">#</TableHead>
             <TableHead className="text-neutral-500">패키지</TableHead>
-            <TableHead className="text-neutral-500">유형</TableHead>
-            <TableHead className="text-neutral-500">호환성</TableHead>
-            <TableHead className="text-right text-neutral-500">
+            <TableHead className="w-20 text-neutral-500">유형</TableHead>
+            <TableHead className="w-44 text-neutral-500">호환성</TableHead>
+            <TableHead className="w-16 text-right text-neutral-500">
               <Download className="ml-auto h-4 w-4" />
             </TableHead>
-            <TableHead className="text-right text-neutral-500">
+            <TableHead className="w-16 text-right text-neutral-500">
               <Star className="ml-auto h-4 w-4" />
             </TableHead>
           </TableRow>
