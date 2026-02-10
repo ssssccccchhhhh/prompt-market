@@ -1,0 +1,18 @@
+{
+  "name": "@jetsong/skill-verify",
+  "version": "1.0.0",
+  "description": "변경된 Java/XML 파일 검증 (컴파일, 트랜잭션, MyBatis 일치)",
+  "jetsong": {
+    "displayName": "Verify",
+    "icon": "✅",
+    "type": "skill",
+    "tags": ["verify", "build", "test", "mybatis", "spring-boot"],
+    "compatibility": {
+      "claude-code": true,
+      "cursor": true,
+      "codex": true,
+      "opencode": true,
+      "antigravity": false
+    }
+  }
+}

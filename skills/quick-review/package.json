@@ -1,0 +1,18 @@
+{
+  "name": "@jetsong/skill-quick-review",
+  "version": "1.0.0",
+  "description": "변경사항 빠른 리뷰 (5분 컷)",
+  "jetsong": {
+    "displayName": "Quick Review",
+    "icon": "🔍",
+    "type": "skill",
+    "tags": ["review", "code-quality", "mybatis", "spring-boot"],
+    "compatibility": {
+      "claude-code": true,
+      "cursor": true,
+      "codex": false,
+      "opencode": true,
+      "antigravity": false
+    }
+  }
+}
