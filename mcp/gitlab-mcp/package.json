@@ -1,0 +1,31 @@
+{
+  "name": "@jetsong/gitlab-mcp",
+  "version": "0.1.0",
+  "description": "GitLab MR 조회/생성, 파이프라인 상태 확인",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/index.ts"
+  },
+  "jetsong": {
+    "displayName": "GitLab",
+    "icon": "🦊",
+    "type": "mcp",
+    "tokenType": "personal",
+    "tokenGuide": "https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html",
+    "compatibility": {
+      "claude-code": true,
+      "cursor": true,
+      "codex": true,
+      "opencode": true,
+      "antigravity": true
+    },
+    "envFields": [
+      { "key": "GITLAB_URL", "default": "https://gitlab.jetsong.co.kr", "editable": false },
+      { "key": "GITLAB_TOKEN", "sensitive": true }
+    ]
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  }
+}

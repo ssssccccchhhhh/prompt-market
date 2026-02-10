@@ -1,0 +1,33 @@
+{
+  "name": "@jetsong/jira-mcp",
+  "version": "0.1.0",
+  "description": "Jira 티켓 검색/생성/상태 변경",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/index.ts"
+  },
+  "jetsong": {
+    "displayName": "Jira",
+    "icon": "🎫",
+    "type": "mcp",
+    "tokenType": "personal",
+    "tokenGuide": "https://id.atlassian.com/manage-profile/security/api-tokens",
+    "compatibility": {
+      "claude-code": true,
+      "cursor": true,
+      "codex": true,
+      "opencode": true,
+      "antigravity": true
+    },
+    "envFields": [
+      { "key": "JIRA_URL", "default": "https://jetsong.atlassian.net", "editable": false },
+      { "key": "JIRA_EMAIL", "placeholder": "you@jetsong.co.kr" },
+      { "key": "JIRA_API_TOKEN", "sensitive": true },
+      { "key": "JIRA_PROJECT_KEY", "default": "IT2026", "editable": false }
+    ]
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  }
+}
