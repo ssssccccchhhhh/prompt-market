@@ -88,6 +88,37 @@ export default async function PackageDetailPage({ params }: PageProps) {
           </section>
         )}
 
+        {/* Changelog */}
+        {pkg.changelog && pkg.changelog.length > 0 && (
+          <section className="mt-8">
+            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-500">
+              Changelog
+            </h3>
+            <div className="space-y-4">
+              {pkg.changelog.map((entry) => (
+                <div key={entry.version} className="rounded-lg border border-neutral-800 bg-neutral-900/50 p-4">
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-sm font-semibold text-neutral-200">
+                      v{entry.version}
+                    </span>
+                    {entry.date && (
+                      <span className="text-xs text-neutral-500">({entry.date})</span>
+                    )}
+                  </div>
+                  <ul className="mt-2 space-y-1">
+                    {entry.changes.map((change, i) => (
+                      <li key={i} className="flex items-start gap-2 text-sm text-neutral-400">
+                        <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-neutral-600" />
+                        {change}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* Tags */}
         {pkg.tags.length > 0 && (
           <section className="mt-8">

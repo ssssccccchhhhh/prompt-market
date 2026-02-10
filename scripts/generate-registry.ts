@@ -1,7 +1,7 @@
 import { readFileSync, readdirSync, writeFileSync, existsSync, statSync } from "fs";
 import { join } from "path";
 import matter from "gray-matter";
-import type { Package, Registry } from "./registry-types.js";
+import type { Package, Registry, ChangelogEntry } from "./registry-types.js";
 
 const ROOT = process.cwd();
 const OUT = join(ROOT, "registry.json");
@@ -39,6 +39,44 @@ function deriveTags(dirName: string, description: string): string[] {
 }
 
 // ---------------------------------------------------------------------------
+// Changelog Parser
+// ---------------------------------------------------------------------------
+
+function parseChangelog(dir: string): ChangelogEntry[] | undefined {
+  const changelogPath = join(dir, "CHANGELOG.md");
+  if (!existsSync(changelogPath)) return undefined;
+
+  const content = readFileSync(changelogPath, "utf-8");
+  const entries: ChangelogEntry[] = [];
+  let current: ChangelogEntry | null = null;
+
+  for (const line of content.split("\n")) {
+    // Match: ## 1.0.0 (2026-02-11)
+    const heading = line.match(/^##\s+(\S+)\s*(?:\(([^)]+)\))?/);
+    if (heading) {
+      if (current) entries.push(current);
+      current = {
+        version: heading[1],
+        date: heading[2] ?? "",
+        changes: [],
+      };
+      continue;
+    }
+    // Match: - change description
+    if (current) {
+      const bullet = line.match(/^[-*]\s+(.+)/);
+      if (bullet) {
+        current.changes.push(bullet[1].trim());
+      }
+    }
+  }
+  if (current) entries.push(current);
+
+  // Return only the 3 most recent versions
+  return entries.length > 0 ? entries.slice(0, 3) : undefined;
+}
+
+// ---------------------------------------------------------------------------
 // MCP Scanner
 // ---------------------------------------------------------------------------
 
@@ -63,6 +101,8 @@ function scanMcps(): Package[] {
     const id = dirName.replace(/-mcp$/, "");
     const description: string = pkg.description ?? "";
 
+    const changelog = parseChangelog(join(mcpDir, dirName));
+
     return {
       id,
       type: "mcp" as const,
@@ -83,6 +123,7 @@ function scanMcps(): Package[] {
       tokenType: jetsong.tokenType,
       tokenGuide: jetsong.tokenGuide,
       stats: { installs: 0, stars: 0 },
+      changelog,
       createdAt: NOW,
       updatedAt: NOW,
       path: `mcp/${dirName}`,
@@ -136,6 +177,8 @@ function scanSkills(): Package[] {
     const tags: string[] =
       jetsong.tags ?? frontmatter.tags ?? [];
 
+    const changelog = parseChangelog(join(skillsDir, dirName));
+
     return {
       id,
       type: "skill" as const,
@@ -147,6 +190,7 @@ function scanSkills(): Package[] {
       tags,
       compatibility,
       stats: { installs: 0, stars: 0 },
+      changelog,
       createdAt: NOW,
       updatedAt: NOW,
       path: `skills/${dirName}`,

@@ -29,9 +29,16 @@ export interface Package {
     installs: number;
     stars: number;
   };
+  changelog?: ChangelogEntry[];
   createdAt: string;
   updatedAt: string;
   path: string;
+}
+
+export interface ChangelogEntry {
+  version: string;
+  date: string;
+  changes: string[];
 }
 
 export interface Registry {

@@ -34,6 +34,7 @@ export interface RegistryPackage {
   tokenType?: string;
   tokenGuide?: string;
   stats: PackageStats;
+  changelog?: ChangelogEntry[];
   createdAt: string;
   updatedAt: string;
   path: string;
@@ -42,6 +43,12 @@ export interface RegistryPackage {
 export interface Registry {
   generated: string;
   packages: RegistryPackage[];
+}
+
+export interface ChangelogEntry {
+  version: string;
+  date: string;
+  changes: string[];
 }
 
 export type SortKey = 'installs' | 'stars' | 'name';
