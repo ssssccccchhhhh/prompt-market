@@ -2,7 +2,8 @@
   "name": "@jetsong/gitlab-mcp",
   "version": "0.1.0",
   "description": "GitLab MR 조회/생성, 파이프라인 상태 확인",
-  "main": "dist/index.js",
+  "type": "module",
+  "main": "dist/gitlab-mcp/src/index.js",
   "scripts": {
     "build": "tsc",
     "dev": "tsx watch src/index.ts"
@@ -26,6 +27,7 @@
     ]
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.0.0"
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "zod": "^3.25"
   }
 }

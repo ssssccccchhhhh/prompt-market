@@ -1,16 +1,17 @@
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { validateEnv } from "../../shared/env.js";
+import { log } from "../../shared/logger.js";
+import { LokiClient } from "./client.js";
+import { registerQueryTools } from "./tools/query.js";
 
-const server = new Server(
-  { name: "loki-mcp", version: "0.1.0" },
-  { capabilities: { tools: {} } }
-);
+const env = validateEnv("loki-mcp", ["LOKI_URL", "LOKI_TOKEN"]);
 
-// TODO: 도구 등록 (Phase 1.2)
+const server = new McpServer({ name: "loki-mcp", version: "0.1.0" });
+const client = new LokiClient(env.LOKI_URL, env.LOKI_TOKEN);
 
-async function main() {
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
-}
+registerQueryTools(server, client);
 
-main().catch(console.error);
+const transport = new StdioServerTransport();
+await server.connect(transport);
+log("loki-mcp", "Server started");
