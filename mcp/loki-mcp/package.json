@@ -1,0 +1,30 @@
+{
+  "name": "@jetsong/loki-mcp",
+  "version": "0.1.0",
+  "description": "Grafana Loki 로그 검색/조회",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/index.ts"
+  },
+  "jetsong": {
+    "displayName": "Loki",
+    "icon": "📊",
+    "type": "mcp",
+    "tokenType": "shared",
+    "compatibility": {
+      "claude-code": true,
+      "cursor": true,
+      "codex": true,
+      "opencode": true,
+      "antigravity": true
+    },
+    "envFields": [
+      { "key": "LOKI_URL", "placeholder": "https://loki.jetsong.co.kr" },
+      { "key": "LOKI_TOKEN", "sensitive": true }
+    ]
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  }
+}
