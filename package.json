@@ -9,7 +9,9 @@
     "lint": "next lint",
     "predev": "tsx scripts/generate-registry.ts",
     "prebuild": "tsx scripts/generate-registry.ts",
-    "mcp:build": "pnpm -r --filter '*-mcp' run build"
+    "mcp:build": "pnpm -r --filter '*-mcp' run build",
+    "cli": "node cli/dist/index.js",
+    "cli:build": "pnpm --filter jetsong run build"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",

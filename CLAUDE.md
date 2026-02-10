@@ -165,9 +165,10 @@ tsx scripts/generate-registry.ts   # Scan mcp/*/package.json + skills/*/SKILL.md
 ./skills/install.sh --list                                # List available skills
 
 # CLI (Phase 2, local dev)
-cd cli && pnpm link --global    # Enable `jetsong` command locally
-npx jetsong install <package> --tool cursor --project ~/workspace/api
-npx jetsong list --type mcp
+pnpm -w run cli:build           # Build CLI
+cd cli && pnpm link --global    # Enable `jetsong` command globally
+jetsong install <package> --tool cursor --project ~/workspace/api
+jetsong list --type mcp
 
 # MCP testing
 npx @modelcontextprotocol/inspector node mcp/jira-mcp/dist/index.js

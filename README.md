@@ -18,10 +18,10 @@ AI Agent(Claude Code, Cursor, Codex, OpenCode, Antigravity)를 위한 **MCP 서�
 
 **CLI**
 ```bash
-npx jetsong list --type mcp       # 패키지 목록
-npx jetsong info jira             # 패키지 상세
-npx jetsong install quick-review  # Skill 설치 (심링크)
-npx jetsong search review         # 검색
+jetsong list --type mcp       # 패키지 목록
+jetsong info jira             # 패키지 상세
+jetsong install quick-review  # Skill 설치 (심링크)
+jetsong search review         # 검색
 ```
 
 **MCP 서버**
@@ -54,11 +54,15 @@ pnpm install
 # MCP 서버 빌드
 pnpm mcp:build
 
+# CLI 빌드 + 글로벌 링크
+pnpm cli:build
+cd cli && pnpm link --global && cd ..
+
 # 개발 서버 실행
 pnpm dev
 ```
 
-`http://localhost:3000` 에서 확인.
+`http://localhost:3000` 에서 확인. CLI는 `jetsong` 커맨드로 사용.
 
 ### 팀 셋업 (shell)
 
