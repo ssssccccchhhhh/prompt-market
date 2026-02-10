@@ -94,6 +94,12 @@ mcp/*/package.json + skills/*/SKILL.md
   → /market pages (RSC import) + CLI (HTTP fetch)
 ```
 
+## Agent Team 운용 교훈
+
+- **git worktree + spawned agent 조합 제한**: worktree는 프로젝트 루트 밖(`../prompt-market-*`)에 생성되므로 spawned agent가 해당 경로에 Write/Bash 권한을 갖지 못함. agent 병렬 작업 시 프로젝트 디렉토리 내부에서 브랜치 전환 방식 사용할 것.
+- **TeamCreate delegate 모드 제한**: team을 생성하면 team-lead와 팀원 모두 delegate 모드에 진입하여 파일 도구(Read/Write/Bash/Glob)를 사용할 수 없음. 파일 작업이 필요한 병렬 작업은 team 없이 독립 Task agent로 spawn할 것.
+- **pnpm workspace + shadcn init**: `pnpm dlx shadcn@latest init`이 workspace 루트에 의존성 추가 시 `ERR_PNPM_ADDING_TO_ROOT` 발생. `pnpm add -w` 로 수동 선설치 후 init 재실행 필요.
+
 ## Language
 
 Project documentation and commit messages are in Korean. Code (variable names, comments in source) is in English.
