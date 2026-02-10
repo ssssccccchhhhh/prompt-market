@@ -62,6 +62,12 @@ Detailed design docs live in `docs/00-overview.md` through `docs/11-versioning.m
 
 ### 🚧 미완료 / 다음 작업
 
+**🔜 즉시 다음: /market 리더보드 장바구니 버튼 추가**
+- `/market` 페이지 헤더 우측에 장바구니 아이콘 버튼 추가 (상세 페이지 `CartButton`과 동일 패턴)
+- 상세 페이지의 CompatGrid에서 Agent를 선택한 뒤 장바구니 담기 → `/market` 헤더에 담긴 개수 badge 표시
+- 실제 장바구니 로직(상태 관리, 일괄 셋업 연동)은 TODO 주석으로 남기고 UI만 구현
+- 참고 파일: `src/app/market/[type]/[id]/components/CartButton.tsx` (기존 상세 페이지용)
+
 **Phase 2.5 — 소셜 기능 (추후 작업 예정)**
 - `data/stats.json`, `data/reviews.json` 생성
 - API Routes: `/api/stats/install`, `/api/stats/star`, `/api/reviews`
