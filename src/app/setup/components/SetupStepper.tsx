@@ -14,6 +14,7 @@ import CliCommand from './CliCommand';
 
 interface SetupStepperProps {
   packages: RegistryPackage[];
+  initialTool?: string;
 }
 
 const STEPS = [
@@ -24,9 +25,11 @@ const STEPS = [
   { number: 5, label: '설정 완료' },
 ];
 
-export default function SetupStepper({ packages }: SetupStepperProps) {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [selectedTools, setSelectedTools] = useState<string[]>([]);
+export default function SetupStepper({ packages, initialTool }: SetupStepperProps) {
+  const [currentStep, setCurrentStep] = useState(initialTool ? 2 : 1);
+  const [selectedTools, setSelectedTools] = useState<string[]>(
+    initialTool ? [initialTool] : []
+  );
   const [selectedMcps, setSelectedMcps] = useState<string[]>([]);
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const [envValues, setEnvValues] = useState<
@@ -159,89 +162,98 @@ export default function SetupStepper({ packages }: SetupStepperProps) {
         </ol>
       </nav>
 
-      {/* Step Content */}
-      <div className="min-h-[300px]">
-        {currentStep === 1 && (
-          <ToolSelector selected={selectedTools} onChange={handleToolChange} />
-        )}
-        {currentStep === 2 && (
-          <McpSelector
-            packages={packages}
-            selectedTools={selectedTools}
-            selected={selectedMcps}
-            onChange={handleMcpChange}
-          />
-        )}
-        {currentStep === 3 && (
-          <SkillSelector
-            packages={packages}
-            selectedTools={selectedTools}
-            selected={selectedSkills}
-            onChange={setSelectedSkills}
-          />
-        )}
-        {currentStep === 4 && (
-          <TokenInput
-            packages={packages}
-            selectedMcps={selectedMcps}
-            envValues={envValues}
-            onChange={setEnvValues}
-          />
-        )}
-        {currentStep === 5 && (
-          <div className="space-y-8">
-            <div className="text-center">
-              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/20">
-                <CheckCircle2 className="h-6 w-6 text-emerald-400" />
-              </div>
-              <h2 className="text-xl font-bold text-neutral-50">
-                설정이 완료되었습니다
-              </h2>
-              <p className="mt-2 text-sm text-neutral-400">
-                아래 설정을 복사하여 프로젝트에 적용하세요
-              </p>
-            </div>
+      {/* Step Content + Side Navigation */}
+      <div className="flex items-stretch gap-4">
+        {/* Left Arrow */}
+        <div className="flex shrink-0 items-center">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={goBack}
+            disabled={currentStep === 1}
+            className="h-24 w-10 rounded-xl text-neutral-400 hover:bg-neutral-800/50 hover:text-neutral-100 disabled:opacity-0"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+        </div>
 
-            <ConfigOutput
+        {/* Content */}
+        <div className="min-h-[300px] flex-1">
+          {currentStep === 1 && (
+            <ToolSelector selected={selectedTools} onChange={handleToolChange} />
+          )}
+          {currentStep === 2 && (
+            <McpSelector
+              packages={packages}
+              selectedTools={selectedTools}
+              selected={selectedMcps}
+              onChange={handleMcpChange}
+            />
+          )}
+          {currentStep === 3 && (
+            <SkillSelector
+              packages={packages}
+              selectedTools={selectedTools}
+              selected={selectedSkills}
+              onChange={setSelectedSkills}
+            />
+          )}
+          {currentStep === 4 && (
+            <TokenInput
               packages={packages}
               selectedTools={selectedTools}
               selectedMcps={selectedMcps}
               envValues={envValues}
+              onChange={setEnvValues}
             />
+          )}
+          {currentStep === 5 && (
+            <div className="space-y-8">
+              <div className="text-center">
+                <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/20">
+                  <CheckCircle2 className="h-6 w-6 text-emerald-400" />
+                </div>
+                <h2 className="text-xl font-bold text-neutral-50">
+                  설정이 완료되었습니다
+                </h2>
+                <p className="mt-2 text-sm text-neutral-400">
+                  아래 설정을 복사하여 프로젝트에 적용하세요
+                </p>
+              </div>
 
-            <CliCommand selectedSkills={selectedSkills} />
-          </div>
-        )}
+              <ConfigOutput
+                packages={packages}
+                selectedTools={selectedTools}
+                selectedMcps={selectedMcps}
+                envValues={envValues}
+              />
+
+              <CliCommand selectedSkills={selectedSkills} />
+            </div>
+          )}
+        </div>
+
+        {/* Right Arrow */}
+        <div className="flex shrink-0 items-center">
+          {currentStep < 5 ? (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={goNext}
+              disabled={!canProceed()}
+              className="h-24 w-10 rounded-xl bg-orange-600 text-white hover:bg-orange-500 disabled:opacity-0"
+            >
+              <ArrowRight className="h-5 w-5" />
+            </Button>
+          ) : (
+            <div className="w-10" />
+          )}
+        </div>
       </div>
 
-      {/* Navigation */}
-      <div className="flex items-center justify-between border-t border-neutral-800 pt-6">
-        <Button
-          variant="ghost"
-          onClick={goBack}
-          disabled={currentStep === 1}
-          className="gap-2 text-neutral-400 hover:text-neutral-100 disabled:opacity-30"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          이전
-        </Button>
-
-        <span className="text-xs text-neutral-600">
-          {currentStep} / {STEPS.length}
-        </span>
-
-        {currentStep < 5 ? (
-          <Button
-            onClick={goNext}
-            disabled={!canProceed()}
-            className="gap-2 bg-orange-600 text-white hover:bg-orange-500 disabled:opacity-30"
-          >
-            다음
-            <ArrowRight className="h-4 w-4" />
-          </Button>
-        ) : (
-          <div className="w-20" />
-        )}
+      {/* Step counter */}
+      <div className="text-center text-xs text-neutral-600">
+        {currentStep} / {STEPS.length}
       </div>
     </div>
   );

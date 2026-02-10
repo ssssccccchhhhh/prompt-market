@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Check, Copy } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Check, Copy, FolderOpen } from 'lucide-react';
 import { generateJsonConfig, generateTomlConfig } from '../lib/config-generators';
 import type { RegistryPackage } from '@/app/market/types';
 
@@ -14,19 +15,13 @@ interface ConfigOutputProps {
   envValues: Record<string, Record<string, string>>;
 }
 
-interface ToolTab {
-  id: string;
-  label: string;
-  format: 'json' | 'toml';
-}
-
-const TOOL_TABS: ToolTab[] = [
-  { id: 'claude-code', label: 'Claude Code', format: 'json' },
-  { id: 'cursor', label: 'Cursor', format: 'json' },
-  { id: 'codex', label: 'Codex', format: 'toml' },
-  { id: 'opencode', label: 'OpenCode', format: 'json' },
-  { id: 'antigravity', label: 'Antigravity', format: 'json' },
-];
+const JSON_TOOLS = ['claude-code', 'cursor', 'opencode', 'antigravity'];
+const JSON_TOOL_LABELS: Record<string, string> = {
+  'claude-code': 'Claude Code',
+  cursor: 'Cursor',
+  opencode: 'OpenCode',
+  antigravity: 'Antigravity',
+};
 
 export default function ConfigOutput({
   packages,
@@ -34,25 +29,42 @@ export default function ConfigOutput({
   selectedMcps,
   envValues,
 }: ConfigOutputProps) {
-  const visibleTabs = TOOL_TABS.filter((tab) => selectedTools.includes(tab.id));
-  const [activeTab, setActiveTab] = useState(visibleTabs[0]?.id ?? '');
+  const hasJsonTools = selectedTools.some((t) => JSON_TOOLS.includes(t));
+  const hasCodex = selectedTools.includes('codex');
+
+  type TabId = 'json' | 'toml';
+  const tabs = useMemo(() => {
+    const result: { id: TabId; label: string }[] = [];
+    if (hasJsonTools) {
+      const names = selectedTools
+        .filter((t) => JSON_TOOLS.includes(t))
+        .map((t) => JSON_TOOL_LABELS[t])
+        .join(' / ');
+      result.push({ id: 'json', label: names });
+    }
+    if (hasCodex) {
+      result.push({ id: 'toml', label: 'Codex' });
+    }
+    return result;
+  }, [selectedTools, hasJsonTools, hasCodex]);
+
+  const [activeTab, setActiveTab] = useState<TabId>(tabs[0]?.id ?? 'json');
   const [copied, setCopied] = useState(false);
+  const [projectRoot, setProjectRoot] = useState('');
 
   const mcpPackages = packages.filter(
     (pkg) => pkg.type === 'mcp' && selectedMcps.includes(pkg.id)
   );
 
-  const activeToolTab = TOOL_TABS.find((t) => t.id === activeTab);
+  const effectiveRoot = projectRoot.trim() || '{PROJECT_ROOT}';
 
   const getConfig = useCallback(() => {
-    if (!activeToolTab) return '';
     if (mcpPackages.length === 0) return '// MCP 서버가 선택되지 않았습니다';
-
-    if (activeToolTab.format === 'toml') {
-      return generateTomlConfig(mcpPackages, envValues);
+    if (activeTab === 'toml') {
+      return generateTomlConfig(mcpPackages, envValues, effectiveRoot);
     }
-    return generateJsonConfig(mcpPackages, envValues);
-  }, [activeToolTab, mcpPackages, envValues]);
+    return generateJsonConfig(mcpPackages, envValues, effectiveRoot);
+  }, [activeTab, mcpPackages, envValues, effectiveRoot]);
 
   const handleCopy = async () => {
     const config = getConfig();
@@ -61,7 +73,6 @@ export default function ConfigOutput({
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      // fallback for non-secure contexts
       const textarea = document.createElement('textarea');
       textarea.value = config;
       document.body.appendChild(textarea);
@@ -73,7 +84,7 @@ export default function ConfigOutput({
     }
   };
 
-  if (visibleTabs.length === 0) {
+  if (tabs.length === 0) {
     return null;
   }
 
@@ -83,30 +94,42 @@ export default function ConfigOutput({
         MCP 설정 파일
       </h3>
 
-      {/* Tab bar */}
-      <div className="flex gap-1 overflow-x-auto rounded-lg border border-neutral-800 bg-neutral-900/50 p-1">
-        {visibleTabs.map((tab) => (
-          <button
-            key={tab.id}
-            type="button"
-            onClick={() => {
-              setActiveTab(tab.id);
-              setCopied(false);
-            }}
-            className={cn(
-              'whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
-              activeTab === tab.id
-                ? 'bg-neutral-700 text-neutral-100'
-                : 'text-neutral-400 hover:text-neutral-200'
-            )}
-          >
-            {tab.label}
-            <span className="ml-1.5 text-[10px] text-neutral-500 uppercase">
-              {tab.format}
-            </span>
-          </button>
-        ))}
-      </div>
+      {/* Tab bar — only show if both JSON and TOML tabs exist */}
+      {tabs.length > 1 && (
+        <div className="flex gap-1 overflow-x-auto rounded-lg border border-neutral-800 bg-neutral-900/50 p-1">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => {
+                setActiveTab(tab.id);
+                setCopied(false);
+              }}
+              className={cn(
+                'whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
+                activeTab === tab.id
+                  ? 'bg-neutral-700 text-neutral-100'
+                  : 'text-neutral-400 hover:text-neutral-200'
+              )}
+            >
+              {tab.label}
+              <span className="ml-1.5 text-[10px] text-neutral-500 uppercase">
+                {tab.id}
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Single tab label when only one format */}
+      {tabs.length === 1 && (
+        <p className="text-sm text-neutral-400">
+          {tabs[0].label}
+          <span className="ml-1.5 text-xs text-neutral-500 uppercase">
+            {tabs[0].id}
+          </span>
+        </p>
+      )}
 
       {/* Config block */}
       <div className="relative">
@@ -133,12 +156,24 @@ export default function ConfigOutput({
         </Button>
       </div>
 
-      <p className="text-xs text-neutral-500">
-        <code className="rounded bg-neutral-800 px-1 py-0.5 text-neutral-400">
-          {'{PROJECT_ROOT}'}
-        </code>
-        를 실제 프로젝트 루트 경로로 교체하세요.
-      </p>
+      <div className="space-y-2">
+        <label className="flex items-center gap-1.5 text-xs text-neutral-400">
+          <FolderOpen className="h-3.5 w-3.5" />
+          프로젝트 루트 경로
+        </label>
+        <Input
+          type="text"
+          value={projectRoot}
+          onChange={(e) => setProjectRoot(e.target.value)}
+          placeholder="/home/user/workspace/my-project"
+          className="border-neutral-700 bg-neutral-800/50 font-mono text-sm text-neutral-100 placeholder:text-neutral-600"
+        />
+        <p className="text-[11px] text-neutral-500">
+          {projectRoot.trim()
+            ? '입력한 경로가 설정에 반영됩니다.'
+            : '경로를 입력하면 {PROJECT_ROOT} 가 자동으로 치환됩니다.'}
+        </p>
+      </div>
     </div>
   );
 }

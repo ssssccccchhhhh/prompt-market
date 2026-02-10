@@ -3,12 +3,21 @@
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { ExternalLink, Eye, EyeOff } from 'lucide-react';
+import { ExternalLink, Eye, EyeOff, AlertTriangle } from 'lucide-react';
 import { useState } from 'react';
 import type { RegistryPackage } from '@/app/market/types';
 
+const TOOL_LABELS: Record<string, string> = {
+  'claude-code': 'Claude Code',
+  cursor: 'Cursor',
+  codex: 'Codex',
+  opencode: 'OpenCode',
+  antigravity: 'Antigravity',
+};
+
 interface TokenInputProps {
   packages: RegistryPackage[];
+  selectedTools: string[];
   selectedMcps: string[];
   envValues: Record<string, Record<string, string>>;
   onChange: (envValues: Record<string, Record<string, string>>) => void;
@@ -16,6 +25,7 @@ interface TokenInputProps {
 
 export default function TokenInput({
   packages,
+  selectedTools,
   selectedMcps,
   envValues,
   onChange,
@@ -108,6 +118,22 @@ export default function TokenInput({
                 </a>
               )}
             </div>
+
+            {(() => {
+              const unsupported = selectedTools.filter(
+                (tool) => !mcp.compatibility[tool]
+              );
+              if (unsupported.length === 0) return null;
+              return (
+                <div className="mb-4 flex items-start gap-1.5 rounded-md bg-amber-500/10 px-2.5 py-1.5 text-[11px] text-amber-400">
+                  <AlertTriangle className="mt-0.5 h-3 w-3 shrink-0" />
+                  <span>
+                    {unsupported.map((t) => TOOL_LABELS[t] ?? t).join(', ')}{' '}
+                    미지원 — 해당 도구의 설정에는 포함되지 않습니다
+                  </span>
+                </div>
+              );
+            })()}
 
             <div className="space-y-3">
               {(mcp.envFields ?? []).map((field) => {

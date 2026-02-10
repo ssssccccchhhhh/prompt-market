@@ -1,7 +1,16 @@
 'use client';
 
 import { cn } from '@/lib/utils';
+import { AlertTriangle } from 'lucide-react';
 import type { RegistryPackage } from '@/app/market/types';
+
+const TOOL_LABELS: Record<string, string> = {
+  'claude-code': 'Claude Code',
+  cursor: 'Cursor',
+  codex: 'Codex',
+  opencode: 'OpenCode',
+  antigravity: 'Antigravity',
+};
 
 interface SkillSelectorProps {
   packages: RegistryPackage[];
@@ -100,6 +109,22 @@ export default function SkillSelector({
                 </div>
 
                 <p className="text-sm text-neutral-400">{pkg.description}</p>
+
+                {(() => {
+                  const unsupported = selectedTools.filter(
+                    (tool) => !pkg.compatibility[tool]
+                  );
+                  if (unsupported.length === 0) return null;
+                  return (
+                    <div className="flex items-start gap-1.5 rounded-md bg-amber-500/10 px-2.5 py-1.5 text-[11px] text-amber-400">
+                      <AlertTriangle className="mt-0.5 h-3 w-3 shrink-0" />
+                      <span>
+                        {unsupported.map((t) => TOOL_LABELS[t] ?? t).join(', ')}{' '}
+                        미지원
+                      </span>
+                    </div>
+                  );
+                })()}
 
                 <div className="flex flex-wrap gap-1">
                   {pkg.tags.slice(0, 4).map((tag) => (

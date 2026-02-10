@@ -1,5 +1,7 @@
 'use client';
 
+import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 import Link from 'next/link';
 import registryData from '@/../registry.json';
 import SetupStepper from './components/SetupStepper';
@@ -7,6 +9,13 @@ import type { RegistryPackage } from '@/app/market/types';
 import { ArrowLeft, Settings } from 'lucide-react';
 
 const packages = registryData.packages as RegistryPackage[];
+
+function SetupContent() {
+  const searchParams = useSearchParams();
+  const initialTool = searchParams.get('tool') ?? undefined;
+
+  return <SetupStepper packages={packages} initialTool={initialTool} />;
+}
 
 export default function SetupPage() {
   return (
@@ -30,7 +39,9 @@ export default function SetupPage() {
       </header>
 
       <main className="mx-auto max-w-4xl px-4 py-8">
-        <SetupStepper packages={packages} />
+        <Suspense>
+          <SetupContent />
+        </Suspense>
       </main>
 
       {/* Footer */}
