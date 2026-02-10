@@ -40,7 +40,7 @@ export default function MarketPage() {
         {/* Hero */}
         <div className="mb-8 text-center">
           <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-            AI 코딩 도구를 위한
+            AI Agent를 위한
             <br />
             <span className="bg-gradient-to-r from-orange-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
               MCP 서버 &amp; Skills
