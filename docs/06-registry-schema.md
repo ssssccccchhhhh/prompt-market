@@ -114,7 +114,7 @@ fs.writeFileSync(OUT, JSON.stringify(registry, null, 2));
       "description": "Jira 티켓 검색/생성/상태 변경",
       "icon": "🎫",
       "version": "0.1.0",
-      "author": "songdonghyun",
+      "author": "ssssccccchhhhh",
       "tags": ["jira", "project-management", "tickets"],
       "compatibility": {
         "claude-code": true, "cursor": true, "codex": true,
@@ -138,7 +138,7 @@ fs.writeFileSync(OUT, JSON.stringify(registry, null, 2));
       "description": "변경사항 빠른 리뷰 (5분 컷)",
       "icon": "🔍",
       "version": "1.0.0",
-      "author": "songdonghyun",
+      "author": "ssssccccchhhhh",
       "tags": ["review", "code-quality", "mybatis"],
       "compatibility": {
         "claude-code": true, "cursor": true, "codex": false,

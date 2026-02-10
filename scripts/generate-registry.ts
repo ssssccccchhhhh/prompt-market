@@ -110,7 +110,7 @@ function scanMcps(): Package[] {
       description,
       icon: jetsong.icon ?? "",
       version: pkg.version ?? "0.0.0",
-      author: "songdonghyun",
+      author: "ssssccccchhhhh",
       tags: deriveTags(dirName, description),
       compatibility: jetsong.compatibility ?? {
         "claude-code": false,
@@ -186,7 +186,7 @@ function scanSkills(): Package[] {
       description,
       icon: jetsong.icon ?? "",
       version: frontmatter.version ?? pkg.version ?? "0.0.0",
-      author: frontmatter.author ?? "songdonghyun",
+      author: frontmatter.author ?? "ssssccccchhhhh",
       tags,
       compatibility,
       stats: { installs: 0, stars: 0 },

@@ -2,7 +2,7 @@
 name: commit-push-pr
 description: 변경사항 커밋, push, GitLab MR 생성
 version: 1.0.0
-author: songdonghyun
+author: ssssccccchhhhh
 tags: [git, commit, pr, gitlab]
 allowed-tools: Bash(git *), Bash(glab *), Read
 compatibility:

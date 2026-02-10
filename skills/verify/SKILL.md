@@ -2,7 +2,7 @@
 name: verify
 description: 변경된 Java/XML 파일 검증 (컴파일, 트랜잭션, MyBatis 일치)
 version: 1.0.0
-author: songdonghyun
+author: ssssccccchhhhh
 tags: [verify, build, test, mybatis, spring-boot]
 allowed-tools: Bash(./mvnw *), Bash(mvn *), Bash(git *), Read
 compatibility:

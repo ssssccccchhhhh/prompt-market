@@ -2,7 +2,7 @@
 name: quick-review
 description: 코드 변경사항 빠르게 리뷰 (5분 컷, 치명적만)
 version: 1.0.0
-author: songdonghyun
+author: ssssccccchhhhh
 tags: [review, code-quality, mybatis, spring-boot]
 allowed-tools: Bash(git *), Read
 compatibility:

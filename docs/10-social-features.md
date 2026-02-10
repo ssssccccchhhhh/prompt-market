@@ -24,11 +24,11 @@ jetsong-toy/
 {
   "jira": {
     "installs": 38,
-    "stars": ["songdonghyun", "kimoo", "leeoo"]
+    "stars": ["ssssccccchhhhh", "kimoo", "leeoo"]
   },
   "quick-review": {
     "installs": 47,
-    "stars": ["songdonghyun", "kimoo"]
+    "stars": ["ssssccccchhhhh", "kimoo"]
   }
 }
 
