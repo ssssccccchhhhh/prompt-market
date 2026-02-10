@@ -63,6 +63,9 @@ importers:
       gray-matter:
         specifier: ^4.0.3
         version: 4.0.3
+      jetsong:
+        specifier: workspace:*
+        version: link:cli
       tailwindcss:
         specifier: ^4.0.0
         version: 4.1.18

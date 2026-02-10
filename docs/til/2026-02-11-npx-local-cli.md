@@ -74,11 +74,33 @@ npx --workspace=cli jetsong list --type mcp
 
 `pnpm -w run cli:build`로 CLI 빌드, `pnpm -w run cli -- list`로 직접 실행.
 
+### 방법 4: workspace:* devDependency (최종 채택)
+
+```json
+// 루트 package.json
+{
+  "devDependencies": {
+    "jetsong": "workspace:*"
+  }
+}
+```
+
+```bash
+pnpm install
+npx jetsong list --type mcp   # 바로 동작!
+```
+
+- `pnpm install` 시 `node_modules/.bin/jetsong` 심링크가 자동 생성된다
+- `npx`가 `node_modules/.bin/`에서 `jetsong`을 찾으므로 npm 레지스트리로 가지 않는다
+- 글로벌 링크(`pnpm link --global`) 없이 프로젝트 내에서 `npx jetsong` 사용 가능
+- `pnpm install`만 하면 누구나 바로 CLI 사용 가능 (팀원 온보딩에 유리)
+
 ## 핵심 정리
 
 | 방법 | 장점 | 단점 |
 |------|------|------|
+| `workspace:*` devDep | `npx jetsong` 그대로 사용, 팀원 셋업 불필요 | 프로젝트 루트에서만 동작 |
 | `pnpm link --global` | 어디서든 `jetsong` 커맨드 사용 | 최초 셋업 필요, PATH 설정 |
 | `node cli/dist/index.js` | 셋업 불필요 | 경로가 길어서 불편 |
 | 루트 스크립트 (`pnpm -w run cli`) | 셋업 불필요 | `--` 구분자 필요 |
-| `npx jetsong` | 직관적 | npm 배포 전에는 사용 불가 |
+| `npx jetsong` (npm 배포) | 직관적 | npm 배포 전에는 사용 불가 |
