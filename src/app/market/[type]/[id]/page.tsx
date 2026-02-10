@@ -3,6 +3,7 @@ import Link from 'next/link';
 import registry from '@/../registry.json';
 import type { RegistryPackage } from '../../types';
 import PackageHeader from './components/PackageHeader';
+import CartButton from './components/CartButton';
 import CompatGrid from './components/CompatGrid';
 import InstallCommand from './components/InstallCommand';
 import McpEnvSetup from './components/McpEnvSetup';
@@ -43,7 +44,7 @@ export default async function PackageDetailPage({ params }: PageProps) {
     <div className="dark min-h-screen bg-neutral-950 text-neutral-50 font-[family-name:var(--font-geist-sans)]">
       {/* Header */}
       <header className="sticky top-0 z-50 border-b border-neutral-800/50 bg-neutral-950/80 backdrop-blur-xl">
-        <div className="mx-auto flex h-14 max-w-3xl items-center px-4">
+        <div className="mx-auto flex h-14 max-w-3xl items-center justify-between px-4">
           <Link
             href="/market"
             className="flex items-center gap-2 text-sm text-neutral-400 transition-colors hover:text-neutral-200"
@@ -51,6 +52,7 @@ export default async function PackageDetailPage({ params }: PageProps) {
             <ArrowLeft className="h-4 w-4" />
             마켓플레이스
           </Link>
+          <CartButton />
         </div>
       </header>
 
