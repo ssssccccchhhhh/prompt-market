@@ -11,6 +11,22 @@ Three-phase roadmap:
 - **Phase 2**: Web marketplace + CLI (`npx jetsong install`)
 - **Phase 3**: Open-source release
 
+### Phase 진행 상태
+
+| Phase | 내용 | 상태 |
+|-------|------|------|
+| 1.1 | 프로젝트 초기화 | ✅ 완료 |
+| 1.2 | MCP 서버 3종 (17도구) | ✅ 완료 |
+| 1.3 | Skills 3종 (SKILL.md + package.json) | ✅ 완료 |
+| 1.4 | setup.sh + install.sh | ✅ 완료 |
+| 1.5 | 팀원 온보딩 + 피드백 | 수동 작업 (별도) |
+| 2.1 | Registry (generate-registry.ts) | ✅ 완료 |
+| 2.2 | Market UI (리더보드 + 상세) | ✅ 완료 |
+| 2.3 | CLI 구현 (npx jetsong) | 🔜 예정 |
+| 2.4 | Setup Web UI (/setup) | 🔜 예정 |
+| 2.5 | 소셜 기능 (stars, reviews, stats) | 📌 추후 작업 예정 |
+| 2.6 | 버전 관리 + Changelog | 🔜 예정 |
+
 Detailed design docs live in `docs/00-overview.md` through `docs/11-versioning.md`.
 
 ## Tech Stack
@@ -93,6 +109,24 @@ mcp/*/package.json + skills/*/SKILL.md
   → registry.json
   → /market pages (RSC import) + CLI (HTTP fetch)
 ```
+
+## Phase 작업 계획 관리
+
+Phase 단위 작업 시작 전에 반드시 `plans/phase-X.Y-*.md` 파일로 실행 계획을 생성한다. 작업 완료 후에도 계획을 다시 볼 수 있도록 기록을 남기는 목적.
+
+```
+plans/
+├── phase-1.3-2.2-skills-registry-market.md   ← 완료된 계획 예시
+├── phase-2.3-cli.md
+└── ...
+```
+
+**계획 파일 포함 항목:**
+- 의존 관계 분석 (선행 Phase)
+- 작업 배치 (병렬 가능 여부)
+- 각 태스크별 생성/수정 파일 목록
+- 검증 커맨드
+- 완료 체크리스트 (작업 후 ✅ 체크)
 
 ## Agent Team 운용 교훈
 
